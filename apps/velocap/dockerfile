@@ -1,0 +1,25 @@
+# Stage 1: Build the Angular application
+FROM node:20 as build
+WORKDIR /app
+
+# Copy package.json and install dependencies
+COPY package*.json ./
+RUN npm install
+
+# Copy the Angular app to the Docker image
+COPY ./apps/velocap ./apps/velocap
+COPY ./nx.json ./nx.json
+COPY ./tsconfig.base.json ./tsconfig.base.json
+
+# COPY ./libs ./libs # If you have shared libraries
+# Other necessary files and folders
+
+# Build the application
+RUN node_modules/.bin/nx build velocap --prod
+
+# Stage 2: Serve the app using Nginx
+FROM nginx:alpine
+COPY --from=build /app/dist/apps/velocap /usr/share/nginx/html
+
+# Copy Nginx configuration if you have a custom one
+# COPY ./apps/my-angular-app/nginx.conf /etc/nginx/nginx.conf

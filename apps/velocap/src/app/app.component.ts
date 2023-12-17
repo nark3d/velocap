@@ -1,14 +1,8 @@
 import { Component } from '@angular/core';
-import { RouterModule } from '@angular/router';
-import { NxWelcomeComponent } from './nx-welcome.component';
 
 @Component({
-  standalone: true,
-  imports: [NxWelcomeComponent, RouterModule],
-  selector: 'velocap-root',
+  selector: 'velocap-app',
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })
-export class AppComponent {
-  title = 'velocap';
-}
+export class AppComponent {}
