@@ -1,20 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: nest-app-deployment
+  name: velocap-api-deployment
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: nest-app
+      app: velocap-api
   template:
     metadata:
       labels:
-        app: nest-app
+        app: velocap-api
     spec:
       containers:
         - name: nest-app
           image: velocap-api:latest
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 3000 # Ensure this port matches the port your NestJS app runs on
 
@@ -22,12 +23,12 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: nest-app-service
+  name: velocap-api-service
 spec:
   type: NodePort
   ports:
     - port: 3000
       targetPort: 3000
-      nodePort: 31000 # Specify an unused node port
+      nodePort: 32000 # Specify an unused node port
   selector:
-    app: nest-app
+    app: velocap-api

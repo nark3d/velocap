@@ -1,0 +1,15 @@
+.snack-container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+
+  > div {
+    margin-right: 10px;
+  }
+  .snack-type {
+    margin-top: 5px;
+  }
+  button {
+    margin-left: auto;
+  }
+}

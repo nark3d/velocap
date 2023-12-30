@@ -1,0 +1,26 @@
+# Stage 1: Build the NestJS application
+FROM node:20 as build
+WORKDIR /app
+
+# Copy package.json and install dependencies
+COPY package*.json ./
+RUN npm install
+
+# Copy the NestJS app to the Docker image
+COPY ./apps/api ./apps/api
+COPY ./tsconfig.base.json ./tsconfig.base.json
+
+# COPY ./libs ./libs # If you have shared libraries
+# Other necessary files and folders
+
+# Build the application
+RUN ./node_modules/.bin/nx build api
+
+# Stage 2: Run the app
+FROM node:20
+WORKDIR /app
+COPY --from=build /app/dist/apps/api ./dist
+COPY package*.json ./
+RUN npm install --production
+
+CMD ["node", "dist/main"]

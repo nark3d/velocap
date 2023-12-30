@@ -1,0 +1,54 @@
+<mat-card>
+  <mat-card-header>
+    <div mat-card-avatar class="jira-header-image"></div>
+    <mat-card-title>Jira Cloud</mat-card-title>
+    <mat-card-subtitle>API Settings</mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content>
+    <form [formGroup]="formGroup">
+      <div class="form-fields">
+        <mat-form-field appearance="outline">
+          <mat-label>Jira URL</mat-label>
+          <input matInput placeholder="Jira URL" formControlName="jiraUrl">
+          <mat-icon matPrefix>link</mat-icon>
+          <mat-error>{{ formErrors(formGroup.controls.jiraUrl)}}</mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Jira API Token</mat-label>
+          <input matInput [type]="hideToken ? 'password' : 'text'" placeholder="Jira API Token" formControlName="jiraToken">
+          <mat-icon matPrefix>vpn_key</mat-icon>
+          <button
+            mat-icon-button
+            matSuffix
+            (click)="hideToken = !hideToken"
+            [attr.aria-label]="'Hide password'"
+            [attr.aria-pressed]="hideToken"
+          >
+            <mat-icon>{{hideToken ? 'visibility_off' : 'visibility'}}</mat-icon>
+          </button>
+          <mat-error>{{ formErrors(formGroup.controls.jiraToken)}}</mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Jira Email</mat-label>
+          <input matInput placeholder="Jira Email" formControlName="jiraEmail">
+          <mat-icon matPrefix>email</mat-icon>
+          <mat-error>{{ formErrors(formGroup.controls.jiraEmail)}}</mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Project</mat-label>
+          <mat-select formControlName="jiraProject">
+            <mat-option *ngFor="let project of jiraProjects" [value]="project.key">
+              {{project.name}}
+            </mat-option>
+          </mat-select>
+          <mat-error>{{ formErrors(formGroup.controls.jiraProject)}}</mat-error>
+        </mat-form-field>
+        {{ connectionStatus}}
+      </div>
+      <div class="form-buttons">
+        <button type="submit" (click)="onSubmit()" [disabled]="!formGroup.valid" mat-raised-button color="primary">Save</button>
+        <button (click)="testConnection()" [disabled]="!formGroup.valid" mat-raised-button color="accent">Connect</button>
+      </div>
+    </form>
+  </mat-card-content>
+</mat-card>

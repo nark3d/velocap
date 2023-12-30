@@ -1,0 +1,36 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  mat-card {
+    margin-top: 20px; // Adjust the value as needed
+    margin-left: 20px; // Adjust the value as needed
+    min-width: 550px;
+  }
+}
+
+.jira-header-image {
+  background-image: url('../../../../assets/img/jira-logo.png');
+  background-size: cover;
+}
+
+.form-fields {
+  display: flex;
+  flex-direction: column;
+  width: 100%; // Make sure form fields use the full width
+
+  mat-form-field {
+    margin-bottom: 10px; // Spacing between form fields
+  }
+}
+
+.form-buttons {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start; // Align buttons to the start of the flex container
+
+  button {
+    margin-right: 10px; // Spacing between buttons
+  }
+}

@@ -1,1 +1,11 @@
-<p>header works!</p>
+<mat-toolbar color="primary">
+  <mat-toolbar-row>
+    <button mat-icon-button aria-label="Menu icon" (click)="toggleSideNav()">
+      <mat-icon>menu</mat-icon>
+    </button>
+    <h1>VeloCap</h1>
+    <span class="flexExpand"></span>
+    <span class="spacer"></span>
+    <velocap-theme-picker></velocap-theme-picker>
+  </mat-toolbar-row>
+</mat-toolbar>
