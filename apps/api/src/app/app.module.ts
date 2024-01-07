@@ -12,6 +12,7 @@ import { ActivityTypeModule } from './modules/activity-type/activity-type.module
 import { SettingModule } from './modules/setting/setting.module';
 import { JiraModule } from './modules/jira/jira.module';
 import { JiraProjectModule } from './modules/jira-project/jira-project.module';
+import StorageService from './lib/services/storage.service';
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { JiraProjectModule } from './modules/jira-project/jira-project.module';
     JiraProjectModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [StorageService],
+  exports: [StorageService],
 })
 export class AppModule {}

@@ -4,24 +4,20 @@ import { AbstractEntity } from '../../../lib/abstract/abstract.entity';
 @Entity({ name: 'jira_projects' })
 export class JiraProject extends AbstractEntity {
   @Column({ unique: true })
-  self: string;
+  self!: string;
 
   @Column({unique: true})
-  jiraId: number;
+  jiraId!: number;
 
   @Column({unique: true})
-  jiraKey: string;
+  jiraKey!: string;
 
   @Column()
-  name: string;
+  name!: string;
 
   @Column()
-  avatarUrl: string;
+  avatarUrl!: string;
 
   @Column()
-  style: string;
-
-  @Column('uuid')
-  uuid: string;
-
+  style!: string;
 }

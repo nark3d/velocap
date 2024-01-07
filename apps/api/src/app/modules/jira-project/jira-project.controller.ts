@@ -1,4 +1,5 @@
-import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, Res, StreamableFile } from '@nestjs/common';
+import { Response } from 'express';
 import { JiraProjectService } from './jira-project.service';
 import { CreateJiraProjectDto } from './dto/create-jira-project.dto';
 import { UpdateJiraProjectDto } from './dto/update-jira-project.dto';
@@ -26,8 +27,15 @@ export class JiraProjectController extends AbstractController<JiraProject> {
     return super.update(id, updateJiraProjectDto);
   }
 
+  @Get('avatar/:id')
+  async getAvatar(@Param('id')id: number, @Res() res: Response) {
+    const fileStream = await this.jiraProjectService.getAvatar(id);
+    res.set('Content-Type', fileStream.mimeType);
+    return (await fileStream.file).pipe(res);
+  }
+
   @Get('populate')
-  populate(): Promise<JiraProject[]> {
-    return this.jiraProjectService.populate();
+  async populate(): Promise<[JiraProject[], number]> {
+    return await this.jiraProjectService.populate();
   }
 }

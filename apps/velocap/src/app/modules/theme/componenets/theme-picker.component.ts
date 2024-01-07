@@ -60,8 +60,6 @@ export class ThemePickerComponent implements OnInit, OnDestroy {
   private initCurrentTheme() {
     const themeName =
       this.themeStorage.getStoredThemeName() || this.themes.find(t => t.isDefault)?.name;
-    console.log('stored', this.themeStorage.getStoredThemeName());
-    console.log('default', this.themes.find(t => t.isDefault)?.name);
     themeName && this.selectTheme(themeName, false);
   }
 

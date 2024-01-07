@@ -1,5 +1,6 @@
-import {Injectable, EventEmitter} from '@angular/core';
+import { Injectable, EventEmitter, ElementRef } from '@angular/core';
 import { ThemeInterface } from '../types/theme.interface';
+import { themes } from '../data/theme-data';
 
 @Injectable({providedIn: 'root'})
 export class ThemeStorage {
@@ -7,11 +8,21 @@ export class ThemeStorage {
 
   onThemeUpdate: EventEmitter<ThemeInterface> = new EventEmitter<ThemeInterface>();
 
+  getCurrentTheme(): ThemeInterface | undefined {
+    const themeName = this.getStoredThemeName();
+    return themeName ? this.getTheme(themeName) : undefined;
+  }
+  getTheme(name: string): ThemeInterface | undefined {
+    return themes.find(t => t.name === name);
+  }
+
   storeTheme(theme: ThemeInterface) {
     try {
       window.localStorage[ThemeStorage.storageKey] = theme.name;
     } catch { }
 
+    document.documentElement.style.setProperty('--primary-color', theme.primary);
+    document.documentElement.style.setProperty('--accent-color', theme.accent);
     this.onThemeUpdate.emit(theme);
   }
 

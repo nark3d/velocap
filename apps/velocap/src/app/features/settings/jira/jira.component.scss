@@ -4,10 +4,14 @@
   align-items: flex-start;
 
   mat-card {
-    margin-top: 20px; // Adjust the value as needed
-    margin-left: 20px; // Adjust the value as needed
+    margin-top: 20px;
+    margin-left: 20px;
     min-width: 550px;
   }
+}
+
+.mat-icon-avatar {
+  font-size: 40px;
 }
 
 .jira-header-image {
@@ -18,19 +22,45 @@
 .form-fields {
   display: flex;
   flex-direction: column;
-  width: 100%; // Make sure form fields use the full width
+  width: 100%;
 
   mat-form-field {
-    margin-bottom: 10px; // Spacing between form fields
+    margin-bottom: 10px;
   }
 }
 
 .form-buttons {
   display: flex;
   flex-direction: row;
-  justify-content: flex-start; // Align buttons to the start of the flex container
+  justify-content: flex-start;
 
   button {
-    margin-right: 10px; // Spacing between buttons
+    margin-right: 20px;
   }
+}
+
+.selection-span {
+  margin-left: 16px;
+
+}
+
+.avatar-image {
+  width: 24px;
+  height: 24px;
+  margin-right: 10px;
+}
+
+
+
+mat-select-trigger {
+  display: flex;
+  span {
+    display: flex;
+    align-items: center;
+  }
+}
+
+mat-select-trigger mat-icon, mat-option mat-icon {
+  width: 24px;
+  height: 24px;
 }

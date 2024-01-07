@@ -1,12 +1,20 @@
 @use '@angular/material' as mat;
 @use 'sass:map';
+@use 'sass:color';
 
-// Styles for the docs app that are based on the current theme.
+@function get-colour($theme, $color-name) {
+  @if $color-name == 'primary' { @return map.get($theme, color, primary, default); }
+  @else if $color-name == 'accent' { @return map.get($theme, color, accent, default); }
+  @else if $color-name == 'warn' { @return map.get($theme, color, warn, default); }
+  @else if $color-name == 'background' { @return map.get($theme, color, background, background); }
+  @else if $color-name == 'foreground' { @return map.get($theme, color, foreground, text); }
+  @else { @error "Unknown color name: #{$color-name}."; }
+}
+
 @mixin theme($theme) {
-  $primary: map.get($theme, primary);
-  $accent: map.get($theme, accent);
-  $warn: map.get($theme, warn);
-  $background: map.get($theme, background);
-  $foreground: map.get($theme, foreground);
-  $next-theme: mat.define-palette(mat.$red-palette);
+  $primary: map.get($theme, color, primary, default);
+  $accent: map.get($theme, color, accent, default);
+  $warn: map.get($theme, color, warn, default);
+  $background: map.get($theme, color, background, background);
+  $foreground: map.get($theme, color, foreground, text);
 }

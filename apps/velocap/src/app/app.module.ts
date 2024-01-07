@@ -23,6 +23,9 @@ import { JiraComponent } from './features/settings/jira/jira.component';
 import { MatInputModule } from '@angular/material/input';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
+import { CustomBannerComponent } from './shared/components/custom-banner/custom-banner.component';
+import { NgOptimizedImage } from '@angular/common';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @NgModule({
   declarations: [
@@ -48,7 +51,10 @@ import { MatCardModule } from '@angular/material/card';
     MatTabsModule,
     MatInputModule,
     ReactiveFormsModule,
-    MatCardModule
+    MatCardModule,
+    CustomBannerComponent,
+    NgOptimizedImage,
+    MatTooltipModule
   ],
   providers: [SideNavService],
   bootstrap: [AppComponent],

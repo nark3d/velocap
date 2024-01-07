@@ -1,7 +1,7 @@
 import { AbstractHttpService } from '../abstractHttp.service';
 import { Setting } from '../../../../../../api/src/app/modules/setting/entities/setting.entity';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { lastValueFrom, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -12,17 +12,20 @@ export class SettingService extends AbstractHttpService<Setting> {
     return '/setting';
   }
 
-  getByKey(key: string) {
+  getByKey(key: string): Observable<Setting> {
     return this.httpClient.get<Setting>(`${this.APIUrl}/key/${key}`);
   }
 
-  async updateByKey(key: string, value: string): Promise<Setting> {
-    const response = await this.httpClient.put<Setting>(`${this.APIUrl}/key/${key}`, { value }).toPromise();
-
-    if (!response) {
-      throw new Error('No response from updateByKey');
-    }
-
-    return response;
+  getByKeys(keys: string[]): Observable<[Setting[], number]> {
+    return this.httpClient.get<[Setting[], number]>(`${this.APIUrl}/keys`, { params: { keys }});
   }
+
+  async updateByKey(key: string, value: string | number): Promise<Setting | undefined> {
+    return await lastValueFrom(this.httpClient.put<Setting>(`${this.APIUrl}/key/${key}`, { value }));
+  }
+
+  async updateByKeys(settings: ({ key: string; value: string | number })[]): Promise<Setting[] | undefined> {
+    return await lastValueFrom(this.httpClient.put<Setting[]>(`${this.APIUrl}/keys`, { settings }));
+  }
+
 }

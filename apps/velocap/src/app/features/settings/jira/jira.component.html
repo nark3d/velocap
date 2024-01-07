@@ -1,5 +1,21 @@
 <mat-card>
   <mat-card-header>
+    <mat-icon
+      mat-card-avatar
+      class="mat-icon-avatar"
+      color="{{ connectionStatus ? 'accent' : 'warn' }}"
+    >
+      {{ connectionStatus ? 'link' : 'link_off' }}
+    </mat-icon>
+    <mat-card-title>{{ connectionStatus ? 'Connected' : 'Disconnected' }}</mat-card-title>
+    <mat-card-subtitle>
+      {{ connectionStatus ? 'Connected to Jira Cloud' : 'Check fields and hit connect' }}
+    </mat-card-subtitle>
+  </mat-card-header>
+</mat-card>
+
+<mat-card>
+  <mat-card-header>
     <div mat-card-avatar class="jira-header-image"></div>
     <mat-card-title>Jira Cloud</mat-card-title>
     <mat-card-subtitle>API Settings</mat-card-subtitle>
@@ -13,6 +29,7 @@
           <mat-icon matPrefix>link</mat-icon>
           <mat-error>{{ formErrors(formGroup.controls.jiraUrl)}}</mat-error>
         </mat-form-field>
+
         <mat-form-field appearance="outline">
           <mat-label>Jira API Token</mat-label>
           <input matInput [type]="hideToken ? 'password' : 'text'" placeholder="Jira API Token" formControlName="jiraToken">
@@ -34,20 +51,42 @@
           <mat-icon matPrefix>email</mat-icon>
           <mat-error>{{ formErrors(formGroup.controls.jiraEmail)}}</mat-error>
         </mat-form-field>
-        <mat-form-field appearance="outline">
+        <mat-form-field
+          appearance="outline"
+          class="avatar-form-field"
+          matTooltip="Connect to select project"
+        >
           <mat-label>Project</mat-label>
+          <mat-icon matPrefix >
+            <img
+              *ngIf="formGroup.controls.jiraProject.value && getSelectedProjectParam('avatarUrl')"
+              width="24"
+              height="24"
+              ngSrc="{{ getSelectedProjectParam('avatarUrl') }}"
+              alt="project icon"
+              class="avatar-image"
+            >
+          </mat-icon>
           <mat-select formControlName="jiraProject">
-            <mat-option *ngFor="let project of jiraProjects" [value]="project.key">
-              {{project.name}}
+            <mat-option *ngFor="let project of jiraProjects" [value]="project.id">
+              <mat-icon matPrefix>
+                <img
+                  width="24"
+                  height="24"
+                  ngSrc="{{project.avatarUrl}}"
+                  alt="project icon"
+                  class="avatar-image"
+                >
+              </mat-icon>
+              <span>{{project.jiraKey}} - {{project.name}}</span>
             </mat-option>
           </mat-select>
           <mat-error>{{ formErrors(formGroup.controls.jiraProject)}}</mat-error>
         </mat-form-field>
-        {{ connectionStatus}}
       </div>
       <div class="form-buttons">
         <button type="submit" (click)="onSubmit()" [disabled]="!formGroup.valid" mat-raised-button color="primary">Save</button>
-        <button (click)="testConnection()" [disabled]="!formGroup.valid" mat-raised-button color="accent">Connect</button>
+        <button (click)="connect()" [disabled]="!formGroup.valid" mat-raised-button color="accent">Connect</button>
       </div>
     </form>
   </mat-card-content>

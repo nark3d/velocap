@@ -26,8 +26,4 @@ export class CreateJiraProjectDto extends AbstractDto {
   @IsNotEmpty()
   @IsString()
   style: string;
-
-  @Column('uuid')
-  @IsUUID()
-  uuid: string;
 }
