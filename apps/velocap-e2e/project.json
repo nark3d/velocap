@@ -4,11 +4,16 @@
   "projectType": "application",
   "sourceRoot": "apps/velocap-e2e/src",
   "targets": {
+    "bddGen": {
+      "command": "bddGen",
+      "outputs": ["{workspaceRoot}/.features-gen"],
+    },
     "e2e": {
       "executor": "@nx/playwright:playwright",
       "outputs": ["{workspaceRoot}/dist/.playwright/apps/velocap-e2e"],
       "options": {
         "config": "apps/velocap-e2e/playwright.config.ts"
+
       }
     },
     "lint": {

@@ -1,21 +1,5 @@
 <mat-card>
   <mat-card-header>
-    <mat-icon
-      mat-card-avatar
-      class="mat-icon-avatar"
-      color="{{ connectionStatus ? 'accent' : 'warn' }}"
-    >
-      {{ connectionStatus ? 'link' : 'link_off' }}
-    </mat-icon>
-    <mat-card-title>{{ connectionStatus ? 'Connected' : 'Disconnected' }}</mat-card-title>
-    <mat-card-subtitle>
-      {{ connectionStatus ? 'Connected to Jira Cloud' : 'Check fields and hit connect' }}
-    </mat-card-subtitle>
-  </mat-card-header>
-</mat-card>
-
-<mat-card>
-  <mat-card-header>
     <div mat-card-avatar class="jira-header-image"></div>
     <mat-card-title>Jira Cloud</mat-card-title>
     <mat-card-subtitle>API Settings</mat-card-subtitle>
@@ -90,4 +74,20 @@
       </div>
     </form>
   </mat-card-content>
+</mat-card>
+
+<mat-card>
+  <mat-card-header>
+    <mat-icon
+      mat-card-avatar
+      class="mat-icon-avatar"
+      color="{{ connectionStatus ? 'accent' : 'warn' }}"
+    >
+      {{ connectionStatus ? 'link' : 'link_off' }}
+    </mat-icon>
+    <mat-card-title>{{ connectionStatus ? 'Connected' : 'Disconnected' }}</mat-card-title>
+    <mat-card-subtitle>
+      {{ connectionStatus ? 'Connected to Jira Cloud' : 'Check fields and hit connect' }}
+    </mat-card-subtitle>
+  </mat-card-header>
 </mat-card>

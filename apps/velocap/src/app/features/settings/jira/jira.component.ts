@@ -102,7 +102,8 @@ export class JiraComponent implements OnInit {
   }
 
   getSelectedProjectParam(projectParam: keyof JiraProject) {
-    const selectedProject = this.jiraProjects.find(project => project.id === this.formGroup.controls.jiraProject.value);
+    const selectedProject = this.jiraProjects.find(project =>
+      project.id === this.formGroup.controls.jiraProject.value);
     return selectedProject ? selectedProject[projectParam] : undefined
   }
 }
