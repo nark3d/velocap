@@ -5,18 +5,24 @@
     <mat-card-subtitle>API Settings</mat-card-subtitle>
   </mat-card-header>
   <mat-card-content>
-    <form [formGroup]="formGroup">
+    <form [formGroup]="formGroup" id="jiraCloud">
       <div class="form-fields">
         <mat-form-field appearance="outline">
           <mat-label>Jira URL</mat-label>
-          <input matInput placeholder="Jira URL" formControlName="jiraUrl">
+          <input matInput placeholder="Jira URL" formControlName="jiraUrl" id="jiraUrl">
           <mat-icon matPrefix>link</mat-icon>
           <mat-error>{{ formErrors(formGroup.controls.jiraUrl)}}</mat-error>
         </mat-form-field>
 
         <mat-form-field appearance="outline">
           <mat-label>Jira API Token</mat-label>
-          <input matInput [type]="hideToken ? 'password' : 'text'" placeholder="Jira API Token" formControlName="jiraToken">
+          <input
+            matInput
+            [type]="hideToken ? 'password' : 'text'"
+            placeholder="Jira API Token"
+            formControlName="jiraToken"
+            id="jiraToken"
+          >
           <mat-icon matPrefix>vpn_key</mat-icon>
           <button
             mat-icon-button
@@ -31,7 +37,13 @@
         </mat-form-field>
         <mat-form-field appearance="outline">
           <mat-label>Jira Email</mat-label>
-          <input matInput placeholder="Jira Email" formControlName="jiraEmail">
+          <input
+            matInput
+            placeholder="Jira Email"
+            formControlName="jiraEmail"
+            type="email"
+            id="jiraEmail"
+          >
           <mat-icon matPrefix>email</mat-icon>
           <mat-error>{{ formErrors(formGroup.controls.jiraEmail)}}</mat-error>
         </mat-form-field>
@@ -51,7 +63,7 @@
               class="avatar-image"
             >
           </mat-icon>
-          <mat-select formControlName="jiraProject">
+          <mat-select formControlName="jiraProject" id="jiraProject">
             <mat-option *ngFor="let project of jiraProjects" [value]="project.id">
               <mat-icon matPrefix>
                 <img
@@ -69,8 +81,21 @@
         </mat-form-field>
       </div>
       <div class="form-buttons">
-        <button type="submit" (click)="onSubmit()" [disabled]="!formGroup.valid" mat-raised-button color="primary">Save</button>
-        <button (click)="connect()" [disabled]="!formGroup.valid" mat-raised-button color="accent">Connect</button>
+        <button
+          type="submit"
+          (click)="onSubmit()"
+          [disabled]="!formGroup.valid"
+          mat-raised-button
+          color="primary"
+          id="jiraSubmit"
+        >Save</button>
+        <button
+          (click)="connect()"
+          [disabled]="!formGroup.valid"
+          mat-raised-button
+          color="accent"
+          id="jiraConnect"
+        >Connect</button>
       </div>
     </form>
   </mat-card-content>
