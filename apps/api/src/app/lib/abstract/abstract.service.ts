@@ -9,9 +9,14 @@ import { AbstractDto } from './abstract.dto';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 import { UpsertOptions } from 'typeorm/repository/UpsertOptions';
 import { NotFoundException } from '@nestjs/common';
+import { PaginationService } from '../services/pagination.service';
+import { Page } from '../services/pagination/page.interface';
 
 export abstract class AbstractService<T extends AbstractEntity> {
-  protected constructor(protected readonly repository: Repository<T>) {}
+  protected constructor(
+    protected readonly repository: Repository<T>,
+    protected readonly paginationService: PaginationService<T>
+  ) {}
 
   create(createDto: AbstractDto): Promise<T> {
     return this.repository.save(createDto as T);
@@ -25,12 +30,12 @@ export abstract class AbstractService<T extends AbstractEntity> {
     return this.findOne(id);
   }
 
-  findAll(findManyOptions?: FindManyOptions<T>): Promise<[T[], number]> {
-    return this.repository.findAndCount({
-      // @todo things that make you go hmmm...
-      ...({ order: { id: 'DESC' } } as FindManyOptions<T>),
-      ...findManyOptions,
-    });
+  findAll(
+    findManyOptions?: FindManyOptions<T>,
+    skip?: number,
+    take?: number
+  ): Promise<Page<T>> {
+    return this.paginationService.paginate(this.repository, findManyOptions, skip, take);
   }
 
   findOne(id: number, customErrorMessage?: string): Promise<T> {

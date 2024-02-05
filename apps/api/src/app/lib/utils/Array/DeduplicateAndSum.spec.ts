@@ -1,6 +1,4 @@
-import { Activity } from '../../../modules/activity/entities/activity.entity';
 import {DeduplicateAndSum} from './DeduplicateAndSum';
-import {CreateActivityDto} from '../../../modules/activity/dto/create-activity.dto';
 
 describe('Deduplicate Array and Sum minutes', () => {
   it('should deduplicate and sum minutes', () => {

@@ -26,6 +26,13 @@ import { MatCardModule } from '@angular/material/card';
 import { CustomBannerComponent } from './shared/components/custom-banner/custom-banner.component';
 import { NgOptimizedImage } from '@angular/common';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { JiraIssuesComponent } from './features/jira-issues/jira-issues.component';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatBadgeModule } from '@angular/material/badge';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { IssuesTableComponent } from './features/jira-issues/issues-table/issues-table.component';
+import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule } from '@angular/material/paginator';
 
 @NgModule({
   declarations: [
@@ -34,6 +41,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     AppComponent,
     SettingsComponent,
     JiraComponent,
+    JiraIssuesComponent,
+    IssuesTableComponent
   ],
   imports: [
     NotificationModule,
@@ -54,7 +63,12 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatCardModule,
     CustomBannerComponent,
     NgOptimizedImage,
-    MatTooltipModule
+    MatTooltipModule,
+    MatProgressBarModule,
+    MatBadgeModule,
+    MatProgressSpinnerModule,
+    MatTableModule,
+    MatPaginatorModule
   ],
   providers: [SideNavService],
   bootstrap: [AppComponent],

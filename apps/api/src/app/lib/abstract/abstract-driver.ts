@@ -9,4 +9,7 @@ export default abstract class AbstractDriver {
     abstract exists(location: string): Promise<boolean>;
     abstract put(tmp: string, location: string, mimeType: string | undefined): Promise<string | void>;
     abstract delete(location: string): Promise<boolean | void>;
+    abstract mkdir(location: string, recursive: boolean): Promise<string>;
+    abstract writeBuffer(buffer: Buffer, location: string): Promise<void>;
+    abstract ls(dir: string): Promise<string[]>;
 }

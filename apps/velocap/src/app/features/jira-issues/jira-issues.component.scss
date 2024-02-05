@@ -1,0 +1,19 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.cards-container {
+  width: 100%;
+  margin: 0 20px;
+}
+
+mat-card {
+  margin-top: 20px;
+  width: calc(100% - 40px);
+  overflow: auto;
+}
+
+.paginator {
+  padding-bottom: 60px;
+}

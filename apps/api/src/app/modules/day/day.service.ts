@@ -4,14 +4,16 @@ import { Day } from './entities/day.entity';
 import { Between, Repository } from 'typeorm';
 import { AbstractService } from '../../lib/abstract/abstract.service';
 import { CreateDayDto } from './dto/create-day.dto';
+import { PaginationService } from '../../lib/services/pagination.service';
 
 @Injectable()
 export class DayService extends AbstractService<Day> {
   constructor(
     @InjectRepository(Day)
     private readonly dayRepository: Repository<Day>,
+    protected readonly paginationService: PaginationService<Day>
   ) {
-    super(dayRepository);
+    super(dayRepository, paginationService);
   }
 
   async upsertFromDateString(date: string): Promise<Day> {

@@ -1,108 +1,84 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { JiraProject } from './entities/jira-project.entity';
-import { FindOptionsWhere, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { AbstractService } from '../../lib/abstract/abstract.service';
 import { JiraClient } from '../../lib/utils/jiraClient';
 import { PageProject } from 'jira.js/out/version3/models';
 import { Project } from 'jira.js/out/version3/models';
 import { CreateJiraProjectDto } from './dto/create-jira-project.dto';
 import StorageService from '../../lib/services/storage.service';
-import { writeFileSync, existsSync, mkdirSync } from 'fs';
 import { Readable } from 'stream';
 import { join } from 'path';
 import { extension } from 'mime-types';
+import { BatchUpsertService } from '../../lib/services/batch-upsert/batch-upsert.service';
+import ChunkGenerator from '../../lib/generators/chunk.generator';
+import { JiraProjectMapper } from './jira-project.mapper';
+import { File } from '../../lib/utils/file';
+import { URL } from '../../lib/utils/url';
+import { PaginationService } from '../../lib/services/pagination.service';
+import { Page } from '../../lib/services/pagination/page.interface';
 
 @Injectable()
 export class JiraProjectService extends AbstractService<JiraProject> {
+  private maxResults = 50;
+  private path = join(__dirname, '../../../dist/public/images/projects');
+
   constructor(
     @InjectRepository(JiraProject)
     private readonly jiraProjectRepository: Repository<JiraProject>,
+    protected readonly paginationService: PaginationService<JiraProject>,
     private jiraClient: JiraClient,
     private storageService: StorageService,
+    private chunkGenerator: ChunkGenerator,
+    private batchUpsertService: BatchUpsertService<JiraProject, CreateJiraProjectDto>,
+    private jiraProjectMapper: JiraProjectMapper
   ) {
-    super(jiraProjectRepository);
+    super(jiraProjectRepository, paginationService);
   }
 
-  // @todo this is nasty, refactor this
-  async getAvatar(id: number): Promise<{ file: Promise<Readable>; mimeType: string }> {
-    const avatarPath = join(__dirname, '/public/images/projects');
-    const svgPath = join(avatarPath, `${id}.svg`);
-    const pngPath = join(avatarPath, `${id}.png`);
-
-    if (existsSync(svgPath)) {
-      return {
-        file: this.storageService.stream(svgPath),
-        mimeType: 'image/svg+xml',
-      };
-    }
-
-    if (existsSync(pngPath)) {
-      return {
-        file: this.storageService.stream(pngPath),
-        mimeType: 'image/png',
-      };
-    }
-
-    throw new Error('fuck');
-  }
-
-  async populate(): Promise<[JiraProject[], number]> {
-    const pageProject: PageProject = await this.jiraClient.getPageProject();
-    await this.downloadAvatar(pageProject);
-    await this.batchUpsertProject(this.mapProjects(pageProject.values));
+  async populate(): Promise<Page<JiraProject>> {
+    await this.chunk();
     return this.findAll({ order: { jiraKey: 'ASC' } });
   }
 
-  // @todo abstract all of shit shite out of here, just a prototype
+  private async chunk(): Promise<void> {
+    await this.chunkGenerator.chunk(
+      (start: number, maxResults: number) => this.fetchMethod(start, maxResults),
+      (projects: Project[]) => this.processMethod(projects),
+      await this.jiraClient.getProjectsCount(),
+      this.maxResults
+    );
+  }
+
+  private async fetchMethod(start: number, maxResults: number): Promise<Project[]> {
+    const projects = (await this.jiraClient.getProjects(maxResults, start))
+    await this.downloadAvatar(projects);
+    return projects.values;
+  }
+
+  private async processMethod(projects: Project[]): Promise<void> {
+    const mappedIssues: Partial<JiraProject>[] = this.jiraProjectMapper.map(projects);
+    await this.batchUpsertService.batchUpsertEntities(
+      this.repository,
+      mappedIssues,
+      'jiraId'
+    );
+  }
+
+  // @todo I'm not sure this should live in here...
   private async downloadAvatar(pageProject: PageProject): Promise<void> {
-    const projects = pageProject.values;
-    const promises = projects.map(async project => {
-      const avatarID = +new URL(project.avatarUrls['48x48']).pathname.split('/').pop();
-      const avatar = await this.jiraClient.getAvatarById(avatarID);
-      const avatarPath = join(__dirname, '/public/images/projects');
-      if (!existsSync(avatarPath)) {
-        mkdirSync(avatarPath, { recursive: true });
-      }
-      const avatarFile = join(avatarPath, `${project.id}.${extension(avatar.contentType)}`);
-      await this.saveAvatar(avatar.avatar, avatarFile)
-    });
-    await Promise.all(promises);
-  }
-
-  private async saveAvatar(buffer: ArrayBuffer, avatarPath: string): Promise<void> {
-    const tempFilePath = join(__dirname, '../../tmp')
-    const tempFile = join(tempFilePath, Date.now().toString());
-
-    if (!existsSync(tempFilePath)) {
-      mkdirSync(tempFilePath, { recursive: true });
-    }
-    writeFileSync(tempFile, Buffer.from(buffer));
-    await this.storageService.put(tempFile, avatarPath);
-  }
-
-  // @todo nasty, this should be done in the database with ON CONFLICT, but I couldn't get it to work
-  private async batchUpsertProject(createDtos: CreateJiraProjectDto[]): Promise<JiraProject[]> {
-    return Promise.all(createDtos.map(async dto => {
-      const existingEntity = await this.repository.findOneBy(
-        { jiraId: dto.jiraId } as FindOptionsWhere<JiraProject>
-      );
-
-      return await this.repository.save(existingEntity ?
-          this.repository.merge(existingEntity, dto) : this.repository.create(dto as JiraProject)
-      );
+    await Promise.all(pageProject.values.map(async project => {
+      const avatar = await this.jiraClient.getAvatarById(+URL.getFinalSegment(project.avatarUrls['48x48']));
+      await this.storageService.saveBuffer(avatar.avatar, join(this.path, `${project.id}.${extension(avatar.contentType)}`));
     }));
   }
-  mapProjects(projects: Project[]): JiraProject[] {
-    return projects.map(project=> {
-      return {
-        self: project.self,
-        jiraId: project.id,
-        jiraKey: project.key,
-        name: project.name,
-        avatarUrl: `http://localhost:3000/api/jira-project/avatar/${project.id}`,
-        style: project.style,
-      } as unknown as JiraProject
-    })
+
+  async getAvatar(id: number): Promise<{ file: Promise<Readable>; mimeType: string }> {
+    const file = await this.storageService.findByBaseName(this.path, `${id}`);
+    return {
+      file: this.storageService.stream(`${this.path}/${file}`),
+      mimeType: File.getMimeType(File.splitPath(file).extension)
+    };
   }
 }

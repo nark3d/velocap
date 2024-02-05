@@ -1,5 +1,6 @@
 import { AbstractHttpService } from '../abstractHttp.service';
 import { Setting } from '../../../../../../api/src/app/modules/setting/entities/setting.entity';
+import { Page } from '../../../../../../api/src/app/lib/services/pagination/page.interface';
 import { Injectable } from '@angular/core';
 import { lastValueFrom, Observable } from 'rxjs';
 
@@ -16,8 +17,8 @@ export class SettingService extends AbstractHttpService<Setting> {
     return this.httpClient.get<Setting>(`${this.APIUrl}/key/${key}`);
   }
 
-  getByKeys(keys: string[]): Observable<[Setting[], number]> {
-    return this.httpClient.get<[Setting[], number]>(`${this.APIUrl}/keys`, { params: { keys }});
+  getByKeys(keys: string[]): Observable<Page<Setting>> {
+    return this.httpClient.get<Page<Setting>>(`${this.APIUrl}/keys`, { params: { keys }});
   }
 
   async updateByKey(key: string, value: string | number): Promise<Setting | undefined> {

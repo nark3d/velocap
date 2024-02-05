@@ -12,6 +12,7 @@ import { ActivityTypeModule } from './modules/activity-type/activity-type.module
 import { SettingModule } from './modules/setting/setting.module';
 import { JiraModule } from './modules/jira/jira.module';
 import { JiraProjectModule } from './modules/jira-project/jira-project.module';
+import { JiraIssueModule } from './modules/jira-issue/jira-issue.module';
 import StorageService from './lib/services/storage.service';
 
 @Module({
@@ -41,6 +42,7 @@ import StorageService from './lib/services/storage.service';
     SprintModule,
     JiraModule,
     JiraProjectModule,
+    JiraIssueModule,
   ],
   controllers: [],
   providers: [StorageService],

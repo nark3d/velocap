@@ -4,7 +4,7 @@ import { CreateSettingDto } from './dto/create-setting.dto';
 import { UpdateSettingDto } from './dto/update-setting.dto';
 import { AbstractController } from '../../lib/abstract/abstract.controller';
 import { Setting } from './entities/setting.entity';
-import { ResponseInterface } from '../../lib/interfaces/response.interface';
+import { Page } from '../../lib/services/pagination/page.interface';
 
 @Controller('setting')
 export class SettingController extends AbstractController<Setting> {
@@ -31,7 +31,7 @@ export class SettingController extends AbstractController<Setting> {
   }
 
   @Get('keys')
-  getByKeys(@Query('keys') keys: string[]): Promise<[Setting[], number]> {
+  getByKeys(@Query('keys') keys: string[]): Promise<Page<Setting>> {
     return this.settingService.getByKeys(keys);
   }
 

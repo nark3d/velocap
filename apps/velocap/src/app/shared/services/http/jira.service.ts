@@ -13,4 +13,8 @@ export class JiraService {
   testConnection() {
     return this.httpClient.get(`${this.APIUrl}/test`);
   }
+
+  getIssues() {
+    return this.httpClient.get(`${this.APIUrl}/issues`);
+  }
 }

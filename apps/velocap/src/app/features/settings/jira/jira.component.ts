@@ -9,6 +9,7 @@ import { JiraProject } from '../../../../../../api/src/app/modules/jira-project/
 import { JiraProjectService } from '../../../shared/services/http/jira-project.service';
 import { lastValueFrom } from 'rxjs';
 import { Setting } from '../../../../../../api/src/app/modules/setting/entities/setting.entity';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'velocap-jira',
@@ -31,7 +32,7 @@ export class JiraComponent implements OnInit {
     jiraUrl: ['', [Validators.required, UrlValidator.validate]],
     jiraToken: ['', Validators.required],
     jiraEmail: ['', [Validators.required, Validators.email]],
-    jiraProject: [0]
+    jiraProject: ['']
   });
 
   connectionStatus = false;
@@ -52,15 +53,15 @@ export class JiraComponent implements OnInit {
   }
 
   private async fetchSettings(): Promise<Setting[]> {
-    return (
-      await lastValueFrom(this.settingService.getByKeys(['jiraUrl', 'jiraToken', 'jiraEmail', 'jiraProject']))
-    )[0];
+    const page$ = this.settingService.getByKeys(['jiraUrl', 'jiraToken', 'jiraEmail', 'jiraProject'])
+      .pipe(map(page => page.data));
+    return await lastValueFrom(page$);
   }
 
   private setFormValue(setting: Setting): void {
     const control =
       this.formGroup.controls[setting.key as keyof typeof this.formGroup.controls] as AbstractControl;
-    control && control.setValue(setting.key === 'jiraProject' ? +setting.value : setting.value);
+    control && control.setValue(setting.value);
   }
 
   async onSubmit() {
@@ -87,11 +88,8 @@ export class JiraComponent implements OnInit {
         this.formGroup.get('jiraProject')?.disable();
       }
     });
-    this.jiraProjectService.populate().subscribe({
-      next: (projects: [JiraProject[], number]) => {
-        this.jiraProjects = projects[0];
-      }
-    });
+    const projects$ = this.jiraProjectService.populate().pipe(map(page => page.data));
+    this.jiraProjects = await lastValueFrom(projects$);
   }
 
   formErrors(formControl: AbstractControl): string | void {
@@ -103,7 +101,7 @@ export class JiraComponent implements OnInit {
 
   getSelectedProjectParam(projectParam: keyof JiraProject) {
     const selectedProject = this.jiraProjects.find(project =>
-      project.id === this.formGroup.controls.jiraProject.value);
+      project.jiraKey === this.formGroup.controls.jiraProject.value);
     return selectedProject ? selectedProject[projectParam] : undefined
   }
 }

@@ -1,4 +1,4 @@
-import AbstractDriver from '../abstract/abstract-driver';
+import AbstractDriver from '../../abstract/abstract-driver';
 import { FileSystem } from './drivers';
 export class Factory {
   private static drivers = {

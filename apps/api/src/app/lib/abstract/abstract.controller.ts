@@ -1,9 +1,9 @@
 import { AbstractService } from './abstract.service';
-import { Delete, Get, Param } from '@nestjs/common';
+import { Delete, Get, Param, Query } from '@nestjs/common';
 import { AbstractEntity } from './abstract.entity';
 import { AbstractDto } from './abstract.dto';
-import { ResponseInterface } from '../interfaces/response.interface';
 import { FindManyOptions } from 'typeorm';
+import { Page } from '../services/pagination/page.interface';
 
 export class AbstractController<T extends AbstractEntity> {
   protected constructor(protected service: AbstractService<T>) {}
@@ -11,9 +11,10 @@ export class AbstractController<T extends AbstractEntity> {
   @Get()
   async findAll(
     findManyOptions?: FindManyOptions,
-  ): Promise<ResponseInterface<T>> {
-    const [data, count] = await this.service.findAll(findManyOptions);
-    return { data, meta: { count } };
+    @Query('skip') skip?: number,
+    @Query('take') take?: number,
+  ): Promise<Page<T>> {
+    return this.service.findAll(findManyOptions, skip, take);
   }
 
   @Get(':id')

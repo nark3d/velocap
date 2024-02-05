@@ -1,0 +1,21 @@
+<div class="cards-container">
+  <mat-card>
+    <mat-progress-bar mode="determinate" [value]="progress ?? 0"></mat-progress-bar>
+
+    <mat-card-title>Refresh Issues</mat-card-title>
+    <mat-card-content>
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="refreshIssues()"
+        matBadge="{{progress}}"
+        matBadgePosition="before"
+        matBadgeColor="accent"
+      >Refresh</button>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="paginator">
+    <velocap-issues-table></velocap-issues-table>
+  </mat-card>
+</div>

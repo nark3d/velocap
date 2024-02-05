@@ -8,18 +8,21 @@ import { DayService } from '../day/day.service';
 import {SprintStatistics} from '../../../../../../libs/api-interfaces/src/lib/sprint-statistics';
 import {SelectQueryBuilder} from 'typeorm/query-builder/SelectQueryBuilder';
 import {SprintAverages} from '../../../../../../libs/api-interfaces/src/lib/sprint-averages';
+import { PaginationService } from '../../lib/services/pagination.service';
+import { Page } from '../../lib/services/pagination/page.interface';
 
 @Injectable()
 export class SprintService extends AbstractService<Sprint> {
   constructor(
     @InjectRepository(Sprint)
     private readonly sprintRepository: Repository<Sprint>,
+    protected readonly paginationService: PaginationService<Sprint>,
     private readonly dayService: DayService,
   ) {
-    super(sprintRepository);
+    super(sprintRepository, paginationService);
   }
 
-  findAll(findManyOptions?: FindManyOptions<Sprint>): Promise<[Sprint[], number]> {
+  findAll(findManyOptions?: FindManyOptions<Sprint>): Promise<Page<Sprint>> {
     return super.findAll({
         relations: ['startDate'],
         order: {

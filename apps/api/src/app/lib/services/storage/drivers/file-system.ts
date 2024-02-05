@@ -1,18 +1,22 @@
-import AbstractDriver from '../../abstract/abstract-driver';
+import AbstractDriver from '../../../abstract/abstract-driver';
 import {
   unlinkSync,
   readFileSync,
   copyFileSync,
   existsSync,
   createReadStream,
+  mkdirSync,
+  writeFileSync,
+  readdirSync
 } from 'fs';
 import { Readable } from 'stream';
+
 export class FileSystem extends AbstractDriver {
   private baseFolder = '';
   private baseLink = '/';
 
   async get(location: string): Promise<Buffer> {
-    return readFileSync(this.prefix(location));
+    return readFileSync(location);
   }
 
   async stream(location: string): Promise<Readable> {
@@ -24,11 +28,11 @@ export class FileSystem extends AbstractDriver {
   }
 
   async delete(location: string): Promise<void> {
-    return unlinkSync(this.prefix(location));
+    return unlinkSync(location);
   }
 
   async exists(location: string): Promise<boolean> {
-    return existsSync(this.prefix(location));
+    return existsSync(location);
   }
 
   getBaseFolder(): string {
@@ -39,7 +43,15 @@ export class FileSystem extends AbstractDriver {
     return `http://localhost:${process.env.PORT}${this.baseLink}`;
   }
 
-  private prefix(location: string): string {
-    return `${process.cwd()}/${this.getBaseFolder()}${location}`;
+  async mkdir(location: string, recursive: boolean): Promise<string> {
+    return mkdirSync(location, { recursive: recursive });
+  }
+
+  async writeBuffer(buffer: Buffer, location: string): Promise<void> {
+    return writeFileSync(location, buffer);
+  }
+
+  async ls(dir: string): Promise<string[]> {
+    return readdirSync(dir);
   }
 }

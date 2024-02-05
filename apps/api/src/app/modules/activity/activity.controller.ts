@@ -4,9 +4,9 @@ import { CreateActivityDto } from './dto/create-activity.dto';
 import { UpdateActivityDto } from './dto/update-activity.dto';
 import { AbstractController } from '../../lib/abstract/abstract.controller';
 import { Activity } from './entities/activity.entity';
-import { ResponseInterface } from '../../lib/interfaces/response.interface';
 import { InsertResult } from 'typeorm';
 import {DeduplicateAndSum} from '../../lib/utils/Array/DeduplicateAndSum';
+import { Page } from '../../lib/services/pagination/page.interface';
 
 @Controller('activity')
 export class ActivityController extends AbstractController<Activity> {
@@ -37,7 +37,7 @@ export class ActivityController extends AbstractController<Activity> {
   @Get('availability/:id')
   findByAvailabilityId(
     @Param('id') id: number,
-  ): Promise<ResponseInterface<Activity>> {
+  ): Promise<Page<Activity>> {
     return super.findAll({
       where: { availabilityId: { id } },
       relations: ['activityTypeId', 'availabilityId'],

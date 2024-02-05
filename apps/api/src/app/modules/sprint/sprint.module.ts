@@ -5,11 +5,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Sprint } from './entities/sprint.entity';
 import { DayModule } from '../day/day.module';
 import { MemberModule } from '../member/member.module';
+import { PaginationService } from '../../lib/services/pagination.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Sprint]), DayModule, MemberModule],
   controllers: [SprintController],
-  providers: [SprintService],
+  providers: [PaginationService, SprintService],
   exports: [SprintService],
 })
 export class SprintModule {}

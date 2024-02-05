@@ -64,7 +64,7 @@
             >
           </mat-icon>
           <mat-select formControlName="jiraProject" id="jiraProject">
-            <mat-option *ngFor="let project of jiraProjects" [value]="project.id">
+            <mat-option *ngFor="let project of jiraProjects" [value]="project.jiraKey">
               <mat-icon matPrefix>
                 <img
                   width="24"

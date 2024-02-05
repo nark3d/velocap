@@ -1,10 +1,11 @@
-import { Body, Controller, Get, Param, Patch, Post, Res, StreamableFile } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, Res } from '@nestjs/common';
 import { Response } from 'express';
 import { JiraProjectService } from './jira-project.service';
 import { CreateJiraProjectDto } from './dto/create-jira-project.dto';
 import { UpdateJiraProjectDto } from './dto/update-jira-project.dto';
 import { AbstractController } from '../../lib/abstract/abstract.controller';
 import { JiraProject } from './entities/jira-project.entity';
+import { Page } from '../../lib/services/pagination/page.interface';
 
 @Controller('jira-project')
 export class JiraProjectController extends AbstractController<JiraProject> {
@@ -35,7 +36,7 @@ export class JiraProjectController extends AbstractController<JiraProject> {
   }
 
   @Get('populate')
-  async populate(): Promise<[JiraProject[], number]> {
+  async populate(): Promise<Page<JiraProject>> {
     return await this.jiraProjectService.populate();
   }
 }

@@ -1,7 +1,6 @@
 import { Repository } from 'typeorm';
 import { AbstractEntity } from './abstract.entity';
 import { AbstractService } from './abstract.service';
-import { InjectRepository } from '@nestjs/typeorm';
 
 class TestEntity extends AbstractEntity {}
 
